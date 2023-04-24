@@ -5,7 +5,7 @@ import java.util.Map;
 import lombok.Getter;
 
 @Getter
-public class CustomException extends RuntimeException{
+public class CustomException extends RuntimeException {
 
 	private Map<String, String> errorMap;
 	
@@ -18,3 +18,11 @@ public class CustomException extends RuntimeException{
 		this.errorMap = errorMap;
 	}
 }
+
+
+
+
+
+
+
+

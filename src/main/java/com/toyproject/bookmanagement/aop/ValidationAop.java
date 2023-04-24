@@ -16,7 +16,7 @@ import com.toyproject.bookmanagement.exception.CustomException;
 @Aspect
 @Component
 public class ValidationAop {
-	
+
 	@Pointcut("@annotation(com.toyproject.bookmanagement.aop.annotation.ValidAspect)")
 	private void pointCut() {}
 	
@@ -34,6 +34,7 @@ public class ValidationAop {
 		
 		if(bindingResult.hasErrors()) {
 			Map<String, String> errorMap = new HashMap<>();
+			
 			bindingResult.getFieldErrors().forEach(error -> {
 				errorMap.put(error.getField(), error.getDefaultMessage());
 			});
@@ -44,3 +45,9 @@ public class ValidationAop {
 		return joinPoint.proceed();
 	}
 }
+
+
+
+
+
+

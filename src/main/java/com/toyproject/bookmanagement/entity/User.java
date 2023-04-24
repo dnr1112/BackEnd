@@ -9,10 +9,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
 public class User {
 	private int userId;
 	private String email;
@@ -31,3 +31,19 @@ public class User {
 				.build();
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

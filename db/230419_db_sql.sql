@@ -15,5 +15,3 @@ from
 	user_tb ut
     left outer join authority_tb at on(at.user_id = ut.user_id)
     left outer join role_tb rt on (rt.role_id = at.role_id)
-where
-	ut.email = ""

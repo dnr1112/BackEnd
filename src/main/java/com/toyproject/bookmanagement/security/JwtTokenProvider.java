@@ -3,7 +3,6 @@ package com.toyproject.bookmanagement.security;
 import java.security.Key;
 import java.util.Date;
 
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -11,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import com.toyproject.bookmanagement.dto.auth.JwtRespDto;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class JwtTokenProvider {
-
+	
 	private final Key key;
 	
 	public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
@@ -32,10 +32,11 @@ public class JwtTokenProvider {
 	
 	public JwtRespDto generateToken(Authentication authentication) {
 		
+		
 		StringBuilder builder = new StringBuilder();
 		
-		authentication.getAuthorities().forEach(authoritiy -> {
-			builder.append(authoritiy.getAuthority() + ",");
+		authentication.getAuthorities().forEach(authority -> {
+			builder.append(authority.getAuthority() + ",");
 		});
 		builder.delete(builder.length() - 1, builder.length());
 		
@@ -44,9 +45,9 @@ public class JwtTokenProvider {
 		Date tokenExpiresDate = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));	// 현재시간 + 하루
 		
 		String accessToken = Jwts.builder()
-				.setSubject(authentication.getName())		// 토큰의 제목
-				.claim("auth", authorities)					// authorities
-				.setExpiration(tokenExpiresDate)			// 토큰 만료 기간
+				.setSubject(authentication.getName())		// 토큰의 제목(email)
+				.claim("auth", authorities)					// auth
+				.setExpiration(tokenExpiresDate)			// 토큰 만료 시간
 				.signWith(key, SignatureAlgorithm.HS256)	// 토큰 암호화
 				.compact();
 		
@@ -61,8 +62,9 @@ public class JwtTokenProvider {
 				.parseClaimsJws(token);
 			
 			return true;
+			
 		} catch (SecurityException | MalformedJwtException e) {
-			log.info("Invalid JWT Token", e);
+			log.info("Invaild JWT Token", e);
 		} catch (ExpiredJwtException e) {
 			log.info("Expired JWT Token", e);
 		} catch (UnsupportedJwtException e) {
@@ -72,14 +74,38 @@ public class JwtTokenProvider {
 		} catch (Exception e) {
 			log.info("JWT Token Error", e);
 		}
+		
 		return false;
 	}
 	
 	public String getToken(String token) {
 		String type = "Bearer";
+		
 		if(StringUtils.hasText(token) && token.startsWith(type)) {
 			return token.substring(type.length() + 1);
 		}
+		
 		return null;
 	}
+	
+	public Claims getClaims(String token) {
+		return Jwts.parserBuilder()
+				.setSigningKey(key)
+				.build()
+				.parseClaimsJws(token)
+				.getBody();
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+

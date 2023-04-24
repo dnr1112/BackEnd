@@ -15,7 +15,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class PrincipalUser implements UserDetails{
+public class PrincipalUser implements UserDetails {
 	private int userId;
 	private String email;
 	private String password;
@@ -28,6 +28,7 @@ public class PrincipalUser implements UserDetails{
 		this.authorities.forEach(authority -> {
 			authorities.add(new SimpleGrantedAuthority(authority.getRole().getRoleName()));
 		});
+		
 		return authorities;
 	}
 
@@ -60,6 +61,5 @@ public class PrincipalUser implements UserDetails{
 	public boolean isEnabled() {
 		return true;
 	}
-	
 
 }
